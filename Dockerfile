@@ -14,7 +14,7 @@ COPY lib/api-spec/package.json ./lib/api-spec/
 COPY lib/api-zod/package.json ./lib/api-zod/
 COPY lib/api-client-react/package.json ./lib/api-client-react/
 COPY artifacts/api-server/package.json ./artifacts/api-server/
-COPY artifacts/messaging-app/package.json ./artifacts/messaging-app/
+COPY artifacts/chat-app/package.json ./artifacts/chat-app/
 
 RUN pnpm install --frozen-lockfile
 
@@ -40,9 +40,9 @@ WORKDIR /app
 COPY lib/ ./lib/
 COPY tsconfig.json ./
 COPY tsconfig.base.json ./
-COPY artifacts/messaging-app/ ./artifacts/messaging-app/
+COPY artifacts/chat-app/ ./artifacts/chat-app/
 
-RUN pnpm --filter @workspace/messaging-app run build
+RUN pnpm --filter @workspace/chat-app run build
 
 # ============================================================
 # Stage 4: Production runtime — Node + Python + FFmpeg + yt-dlp
@@ -87,7 +87,7 @@ COPY --from=deps /app/artifacts/api-server/node_modules ./artifacts/api-server/n
 COPY --from=build-api /app/artifacts/api-server/dist ./artifacts/api-server/dist/
 
 # Frontend static assets
-COPY --from=build-frontend /app/artifacts/messaging-app/dist ./public/
+COPY --from=build-frontend /app/artifacts/chat-app/dist ./public/
 
 RUN chown -R appuser:appgroup /app
 USER appuser
@@ -104,4 +104,3 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
 CMD ["node", "--enable-source-maps", \
      "--max-old-space-size=8192", \
      "./artifacts/api-server/dist/index.mjs"]
-     
