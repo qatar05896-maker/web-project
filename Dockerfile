@@ -16,7 +16,8 @@ COPY lib/api-client-react/package.json ./lib/api-client-react/
 COPY artifacts/api-server/package.json ./artifacts/api-server/
 COPY artifacts/chat-app/package.json ./artifacts/chat-app/
 
-RUN pnpm install
+# تم إضافة أمر resolution-mode لحل مشكلة وقت المكتبات
+RUN pnpm config set resolution-mode highest && pnpm install
 
 # ============================================================
 # Stage 2: Build the API server
